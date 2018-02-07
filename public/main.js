@@ -1,4 +1,37 @@
 $(document).ready(function() {
+    function hideTableRows() {
+        console.log("hideTableRows")
+        $("#mainboard-row").hide();
+        $("#sideboard-row").hide();
+        $("#total-row").hide();
+        $("#time-row").hide();
+    }
+
+    function showTableRows() {
+        console.log("showTableRows")
+        $("#mainboard-row").show();
+        $("#sideboard-row").show();
+        $("#total-row").show();
+        $("#time-row").show();
+    }
+
+    function resetTables() {
+        console.log("resetTables")
+        $("#mainboard-table-body").html("");
+        $("#sideboard-table-body").html("")
+        $("#total-amount").text("");
+        $("#time-display").text("");
+    }
+
+    function formatPrice(price) {
+        if (price != null)
+        {
+            return `$${price.toFixed(2)}`
+        }
+
+            return price;
+    }
+
     $("#calculate").click(function() {
         var mainboardStr = $("#mainboard").val();
         var mainboard = mainboardStr.split("\n")
@@ -21,18 +54,25 @@ $(document).ready(function() {
             contentType: "application/json",
             dataType: "text",
             beforeSend: function() {
+                hideTableRows();
                  $("#loader-row").show();
             }
         })
         .done(function( data ) {
             console.log("success!");
-
-            $("#loader-row").hide();            
+            $("#loader-row").hide();
+            resetTables();
 
             var obj = JSON.parse(data);
-            var total = obj["total"];
-            $("#total-display").text($("#total-display").text() + total);
 
+            // Populate Time
+            $("#time-display").text(new Date());
+
+            // Populate Total
+            var total = obj["total"];
+            $("#total-amount").text(formatPrice(total));
+
+            // Populate mainboard
             var mainboard = obj["mainboard"];
             mainboard.forEach(function(item) {
                 var name = item["name"];
@@ -40,9 +80,10 @@ $(document).ready(function() {
                 var count = item["count"];
                 var total = price * count;
 
-                $("#card-table-body").append(`<tr><td>${count}</td><td>${name}</td><td>${price}</td><td>${total}</td></tr>`)
+                $("#mainboard-table-body").append(`<tr><td>${count}</td><td>${name}</td><td>${formatPrice(price)}</td><td>${formatPrice(total)}</td></tr>`)
             });
 
+            // Populate sideboard
             var sideboard = obj["sideboard"];
             sideboard.forEach(function(item) {
                 var name = item["name"];
@@ -50,16 +91,15 @@ $(document).ready(function() {
                 var count = item["count"];
                 var total = price * count;
 
-                $("#side-table-body").append(`<tr><td>${count}</td><td>${name}</td><td>${price}</td><td>${total}</td></tr>`)
+                $("#sideboard-table-body").append(`<tr><td>${count}</td><td>${name}</td><td>${formatPrice(price)}</td><td>${formatPrice(total)}</td></tr>`)
             });
 
-            $("#side-table").show();
-            $("#card-table").show();
+            showTableRows();
         })
         .fail(function( err ) {
             console.log(err);
-            console.log("error");  
-            $("#loader-row").hide();  
+            console.log("error");
+            $("#loader-row").hide();
         });
     });
 });

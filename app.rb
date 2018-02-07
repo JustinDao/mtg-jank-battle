@@ -41,19 +41,17 @@ post '/calculate' do
       parts = line.strip.split
       num = parts[0].to_i
       card = parts[1..-1].join(" ")
-      card.gsub!(" ", "%20")
+      url_card_name = card.gsub(" ", "%20")
 
       puts card
 
-      response = req.get("/catalog/search?filter%5Bipp%5D=20&filter%5Bsort%5D=price_asc&filter%5Bname%5D=%22#{card}%22")
+      response = req.get("/catalog/search?filter%5Bipp%5D=20&filter%5Bsort%5D=price_asc&filter%5Bname%5D=%22#{url_card_name}%22")
       page = Nokogiri::HTML(response.body)
 
       min_price = page.css("div.productCardWrapper")
         .select{ |c| !c.css("span.productDetailTitle").text.include?("Not Tournament Legal") }
         .select{ |c| ignore_sets.all?{|set| !c.css("div.productDetailSet").text.include?(set)} }
         .flat_map{ |obj| obj.css("li.NM").css("span.stylePrice").map{ |p| p.text.strip.gsub("$", "").to_f } }.min
-
-      p min_price
 
       if min_price != nil
         mainboard_cards << ({name: card, price: min_price, count: num})
@@ -70,19 +68,17 @@ post '/calculate' do
       parts = line.strip.split
       num = parts[0].to_i
       card = parts[1..-1].join(" ")
-      card.gsub!(" ", "%20")
+      url_card_name = card.gsub(" ", "%20")
 
       puts card
 
-      response = req.get("/catalog/search?filter%5Bipp%5D=20&filter%5Bsort%5D=price_asc&filter%5Bname%5D=%22#{card}%22")
+      response = req.get("/catalog/search?filter%5Bipp%5D=20&filter%5Bsort%5D=price_asc&filter%5Bname%5D=%22#{url_card_name}%22")
       page = Nokogiri::HTML(response.body)
 
       min_price = page.css("div.productCardWrapper")
         .select{ |c| !c.css("span.productDetailTitle").text.include?("Not Tournament Legal") }
         .select{ |c| ignore_sets.all?{|set| !c.css("div.productDetailSet").text.include?(set)} }
         .flat_map{ |obj| obj.css("li.NM").css("span.stylePrice").map{ |p| p.text.strip.gsub("$", "").to_f } }.min
-
-      p min_price
 
       if min_price != nil
         sideboard_cards << ({name: card, price: min_price, count: num})

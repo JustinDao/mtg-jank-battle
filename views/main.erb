@@ -53,17 +53,25 @@
   </div>
 </div>
 
-<div class="row" id="total-row">
+<div class="row" id="time-row" style="display: none;">
   <div class="col-12">
-    <h3 id="total-display">Total: </h3>
+    Time: <span id="time-display"></span>
   </div>
 </div>
 
-<div class="row">
+<br>
+
+<div class="row" id="total-row" style="display: none;">
+  <div class="col-12">
+    <h3>Total: <span id="total-amount"></span></h3>
+  </div>
+</div>
+
+<div class="row" id="mainboard-row" style="display: none;">
   <div class="col-12">
     <h4>Mainboard</h4>
 
-    <table id="card-table" class="table" style="display: none;">
+    <table id="mainboard-table" class="table">
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -72,17 +80,17 @@
           <th scope="col">Total</th>
         </tr>
       </thead>
-      <tbody id="card-table-body">        
+      <tbody id="mainboard-table-body">        
       </tbody>
     </table>
   </div>
 </div>
 
-<div class="row">
+<div class="row" id="sideboard-row" style="display: none;">
   <div class="col-12">
     <h4>Sideboard</h4>
 
-    <table id="side-table" class="table" style="display: none;">
+    <table id="sideboard-table" class="table">
       <thead>
         <tr>
           <th scope="col">#</th>
@@ -91,7 +99,7 @@
           <th scope="col">Total</th>
         </tr>
       </thead>
-      <tbody id="side-table-body">        
+      <tbody id="sideboard-table-body">        
       </tbody>
     </table>
   </div>
