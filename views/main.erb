@@ -1,0 +1,103 @@
+<div class="row">
+  <div class="col-12">
+    <p>Input Decklist Here:</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="input-group">
+      <textarea id="mainboard"
+                class="form-control" 
+                rows="10"
+                placeholder="4 Serum Visions
+4 Opt"></textarea>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-12">
+    <p>Input Sideboard Here:</p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="input-group">
+      <textarea id="sideboard"
+                class="form-control" 
+                rows="5"
+                placeholder="4 Dispel"></textarea>
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col-12">
+    <button id="calculate" class="btn btn-primary">
+      Calculate
+    </button>
+  </div>
+</div>
+
+<br>
+
+<div class="row" id="loader-row" style="display: none;">
+  <div class="col-12">
+    <div class="loader"></div>
+  </div>
+</div>
+
+<div class="row" id="total-row">
+  <div class="col-12">
+    <h3 id="total-display">Total: </h3>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <h4>Mainboard</h4>
+
+    <table id="card-table" class="table" style="display: none;">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody id="card-table-body">        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <h4>Sideboard</h4>
+
+    <table id="side-table" class="table" style="display: none;">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody id="side-table-body">        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
