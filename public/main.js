@@ -42,10 +42,17 @@ $(document).ready(function() {
         console.log(sideboard);
 
         // get data
-        var cardData = {
-            "mainboard": mainboard,
-            "sideboard": sideboard
-        };
+        var cardData = {};
+        if (mainboard.length > 0)
+        {
+            cardData["mainboard"] = mainboard;
+        }
+
+        if (sideboard.length > 0)
+        {
+            cardData["sideboard"] = sideboard;
+        }
+
 
         $.ajax({
             method: "POST",

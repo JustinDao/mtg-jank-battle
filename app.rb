@@ -37,8 +37,12 @@ post '/calculate' do
   req.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
   if request_payload.key?("mainboard") && request_payload.key?("mainboard") != nil
-    request_payload["mainboard"].each do |line|
-      parts = line.strip.split
+    request_payload["mainboard"].each do |val|
+      if val.strip == ""
+        next
+      end
+      
+      parts = val.strip.split
       num = parts[0].to_i
       card = parts[1..-1].join(" ")
       url_card_name = card.gsub(" ", "%20")
@@ -64,8 +68,12 @@ post '/calculate' do
   end
 
   if request_payload.key?("sideboard") && request_payload.key?("sideboard") != nil
-    request_payload["sideboard"].each do |line|
-      parts = line.strip.split
+    request_payload["sideboard"].each do |val|
+      if val.strip == ""
+        next
+      end
+
+      parts = val.strip.split
       num = parts[0].to_i
       card = parts[1..-1].join(" ")
       url_card_name = card.gsub(" ", "%20")
