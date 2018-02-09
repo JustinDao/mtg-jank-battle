@@ -11,6 +11,15 @@ ignore_sets = [
   "Unglued"
 ]
 
+# WUBRG
+basic_lands = [
+  "Plains",
+  "Island",
+  "Swamp",
+  "Mountain",
+  "Forest"
+]
+
 get '/' do
   erb :index
 end
@@ -53,7 +62,7 @@ post '/calculate' do
       page = Nokogiri::HTML(response.body)
 
       min_price = page.css("div.productCardWrapper")
-        .select{ |c| !c.css("span.productDetailTitle").text.include?("Not Tournament Legal") }
+        .select{ |c| basic_lands.include?(card) ? c.css("span.productDetailTitle").text.include?(card) : c.css("span.productDetailTitle").text.strip == card }
         .select{ |c| ignore_sets.all?{|set| !c.css("div.productDetailSet").text.include?(set)} }
         .flat_map{ |obj| obj.css("li.NM").css("span.stylePrice").map{ |p| p.text.strip.gsub("$", "").to_f } }.min
 
