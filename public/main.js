@@ -1,4 +1,58 @@
 $(document).ready(function() {
+    // Cards is a list of tuples
+    // { name, num, type }
+    function UpdatePrices(cards) {
+        var completed = 0;
+        var total = 0;
+
+        cards.forEach(function(card) {
+            var name = card["name"];
+            var number = card["number"];
+            var type = card["type"];
+
+            var input = {
+                "name": name,
+                "number": number
+            }
+
+            $.ajax({
+                method: "POST",
+                url: "/calculateSingle",
+                data: JSON.stringify(input),
+                contentType: "application/json",
+                dataType: "text"
+            })
+            .always(function() {
+                completed += 1;
+                if (completed == cards.length)
+                {
+                    $("#time-display").text(new Date());
+                    $("#loader-row").hide();
+                }
+            })
+            .done(function (data) {                
+                var obj = JSON.parse(data);
+                price = obj["price"];
+                card_total = obj["total"];
+
+                if (card_total != null)
+                {
+                    total += parseFloat(card_total);    
+                    $("#total-amount").text(formatPrice(total));
+                }                
+
+                if (type == "mainboard")
+                {
+                    $("#mainboard-table-body").append(`<tr><td>${number}</td><td>${name}</td><td>${formatPrice(price)}</td><td>${formatPrice(card_total)}</td></tr>`);
+                }
+                else if (type == "sideboard")
+                {
+                    $("#sideboard-table-body").append(`<tr><td>${number}</td><td>${name}</td><td>${formatPrice(price)}</td><td>${formatPrice(card_total)}</td></tr>`);    
+                }            
+            });
+        });
+    }
+
     function hideTableRows() {
         console.log("hideTableRows")
         $("#mainboard-row").hide();
@@ -29,16 +83,18 @@ $(document).ready(function() {
             return `$${price.toFixed(2)}`
         }
 
-            return price;
+        return price;
     }
 
     $("#calculate").click(function() {
         var mainboardStr = $("#mainboard").val();
-        var mainboard = mainboardStr.split("\n")
+        var mainboard = mainboardStr.split("\n");
+        mainboard = mainboard.filter(str => str != null && str.trim() != "");
         console.log(mainboard);
 
         var sideboardStr = $("#sideboard").val();
         var sideboard = sideboardStr.split("\n");
+        sideboard = sideboard.filter(str => str != null && str.trim() != "");
         console.log(sideboard);
 
         // get data
@@ -53,60 +109,43 @@ $(document).ready(function() {
             cardData["sideboard"] = sideboard;
         }
 
+        hideTableRows();
+        $("#loader-row").show();
+        resetTables();
 
-        $.ajax({
-            method: "POST",
-            url: "/calculate",
-            data: JSON.stringify(cardData),
-            contentType: "application/json",
-            dataType: "text",
-            beforeSend: function() {
-                hideTableRows();
-                 $("#loader-row").show();
-            }
-        })
-        .done(function( data ) {
-            console.log("success!");
-            $("#loader-row").hide();
-            resetTables();
+        var total = 0.0;
 
-            var obj = JSON.parse(data);
+        var completed = 0;
+        var sideCompleted = 0;
 
-            // Populate Time
-            $("#time-display").text(new Date());
+        showTableRows();
 
-            // Populate Total
-            var total = obj["total"];
-            $("#total-amount").text(formatPrice(total));
+        var cards = [];        
 
-            // Populate mainboard
-            var mainboard = obj["mainboard"];
-            mainboard.forEach(function(item) {
-                var name = item["name"];
-                var price = item["price"];
-                var count = item["count"];
-                var total = price * count;
+        mainboard.forEach(function(str) {
+            var parts = str.split(" ");
+            var number = parts.shift();
+            var name = parts.join(" ");
 
-                $("#mainboard-table-body").append(`<tr><td>${count}</td><td>${name}</td><td>${formatPrice(price)}</td><td>${formatPrice(total)}</td></tr>`)
+            cards.push({
+                "name": name,
+                "number": number,
+                "type": "mainboard",
             });
-
-            // Populate sideboard
-            var sideboard = obj["sideboard"];
-            sideboard.forEach(function(item) {
-                var name = item["name"];
-                var price = item["price"];
-                var count = item["count"];
-                var total = price * count;
-
-                $("#sideboard-table-body").append(`<tr><td>${count}</td><td>${name}</td><td>${formatPrice(price)}</td><td>${formatPrice(total)}</td></tr>`)
-            });
-
-            showTableRows();
-        })
-        .fail(function( err ) {
-            console.log(err);
-            console.log("error");
-            $("#loader-row").hide();
         });
+
+        sideboard.forEach(function(str) {
+            var parts = str.split(" ");
+            var number = parts.shift();
+            var name = parts.join(" ");
+
+            cards.push({
+                "name": name,
+                "number": number,
+                "type": "sideboard",
+            });
+        });
+
+        UpdatePrices(cards);
     });
 });
